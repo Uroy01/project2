@@ -6,7 +6,7 @@
 // accesses received via stdin.
 //
 
-#include <stdbool.h>
+ #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 {
     // Parse the arguments.
     if (argc != 7) {
-        fprintf(stderr, "Incorrect number of arguments.\n");
+        fprintf(stderr, "Incorrect number of arguments.");
         return 1;
     }
     char *replacement_policy_str = argv[1];
@@ -29,9 +29,9 @@ int main(int argc, char **argv)
     char *prefetch_strategy = argv[5];
     size_t prefetch_amount = strtol(argv[6], &endptr, 10);
 
-    // TODO: calculate the line size and number of sets.
-    int line_size = 0;
-    int sets = 0;
+    // calculate the line size and number of sets.
+    int line_size = cache_size/cache_lines;
+    int sets = cache_lines/associativity;
 
     // Print out some parameter info
     printf("Parameter Info\n");
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
     } else if (!strcmp("SEQUENTIAL", prefetch_strategy)) {
         prefetcher = sequential_prefetcher_new(prefetch_amount);
     } else if (!strcmp("CUSTOM", prefetch_strategy)) {
-        prefetcher = custom_prefetcher_new();
+        prefetcher = custom_prefetcher_new(prefetch_amount);
     } else {
         fprintf(stderr, "Unknown replacement policy %s", prefetch_strategy);
         return 1;
